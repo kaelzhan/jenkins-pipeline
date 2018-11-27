@@ -1,0 +1,9 @@
+http://localhost:8080/scriptApproval/
+
+method groovy.lang.GroovyObject invokeMethod java.lang.String java.lang.Object
+method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild
+staticMethod groovy.json.JsonOutput toJson java.lang.Object
+
+-Dpermissive-script-security.enabled=true
+
+So you jenkins.xml will look something like this:

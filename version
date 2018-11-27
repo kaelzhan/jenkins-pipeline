@@ -1,0 +1,4 @@
+version: 0.9
+test: 1.0
+stage: 1.0
+prod: 1.0

@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    labels:
+      app: jenkins-slave
+    name: learn-k8s-ruby
+spec:
+  hostAliases:
+    - ip: "10.103.59.210"
+      hostnames:
+      - "stash.bbpd.io"
+  volumes:
+    - name: learn-k8s-aws-configs
+      secret:
+        secretName: learn-k8s-aws-configs
+        defaultMode: 256
+    - name: learn-k8s-ssh-configs
+      secret:
+        secretName: learn-k8s-ssh-configs
+        defaultMode: 256
+    - name: learn-k8s-chef-configs
+      secret:
+        secretName: learn-k8s-chef-configs
+        defaultMode: 256
+    - name: learn-k8s-infoblox-configs
+      secret:
+        secretName: learn-k8s-infoblox-configs
+        defaultMode: 256
+
+  containers:
+  - name: learn-k8s-ruby
+    image: docker-registry.dev.bbpd.io/saas/lcjenkins-ruby-java8:latest
+    imagePullPolicy: Always
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - name: learn-k8s-aws-configs
+      mountPath: /root/.aws
+      readOnly: true
+    - name: learn-k8s-ssh-configs
+      mountPath: /root/.ssh
+      readOnly: true
+    - name: learn-k8s-chef-configs
+      mountPath: /root/chef
+      readOnly: true
+    - name: learn-k8s-infoblox-configs
+      mountPath: /root/.infoblox
+      readOnly: true
+    resources:
+      limits:
+        memory: "1000Mi"
+        cpu: "1"
+      requests:
+        memory: "500Mi"
+        cpu: "0.5"
