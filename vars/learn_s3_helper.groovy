@@ -50,7 +50,7 @@ def parameter_save(){
         env.(p.key.toString()) = (p.value.toString())
     }
     parameter_json = readJSON text: groovy.json.JsonOutput.toJson(parameter_json)
-    writeJSON(file: parameter_file_local, json: parameter_json)
+    writeJSON(file: parameter_file_local, json: parameter_json, pretty: 4)
 }
 
 // load all envs from _file to local file and runtime_env
@@ -65,7 +65,7 @@ def load_env_from_file(_file){
         env.(it.key.toString()) = (it.value.toString())
     }
     parameter_json = readJSON text: groovy.json.JsonOutput.toJson(parameter_json)
-    writeJSON(file: parameter_file_local, json: parameter_json)
+    writeJSON(file: parameter_file_local, json: parameter_json, pretty: 4)
 }
 
 // read all envs from s3 to local file and runtime_env
@@ -92,7 +92,7 @@ def env_set(_key,_value){
 
     parameter_json.(_key.toString()) = (_value.toString())
     env.(_key.toString()) = (_value.toString())
-    writeJSON(file: parameter_file_local, json: parameter_json)
+    writeJSON(file: parameter_file_local, json: parameter_json, pretty: 4)
 }
 
 // save all envs from runtime_env to local file and s3
@@ -105,6 +105,6 @@ def env_save(){
         parameter_json.(p.key.toString()) = (p.value.toString())
     }
     parameter_json = readJSON text: groovy.json.JsonOutput.toJson(parameter_json)
-    writeJSON(file: parameter_file_local, json: parameter_json)
+    writeJSON(file: parameter_file_local, json: parameter_json, pretty: 4)
     s3_write(env.JOB_NAME, params.JENKINS_EXECUTION_ID, parameter_file)
 }
