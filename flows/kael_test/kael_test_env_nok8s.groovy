@@ -14,6 +14,7 @@ pipeline {
             steps {
                 sh 'env'
                 script{
+                    captain_notifier.add_captain_callback()
                     learn_s3_helper.parameter_save()
                 }
                 sh 'env'
