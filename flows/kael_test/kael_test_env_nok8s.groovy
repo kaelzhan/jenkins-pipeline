@@ -12,7 +12,10 @@ pipeline {
     stages {
         stage('kael test step 1') {
             steps {
-                token: 'build4mepls'
+                
+                withContext{
+                    token: 'build4mepls'
+                }
                 sh 'env'
                 script{
                     learn_s3_helper.parameter_save()
