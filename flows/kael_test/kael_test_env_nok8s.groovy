@@ -1,4 +1,3 @@
-pipelineJob('kael_test_env_nok8s') {
     authenticationToken('secret')
     batchTask('upload', 'curl --upload-file build/dist.zip http://www.example.com/upload')
     blockOnUpstreamProjects()
@@ -25,4 +24,3 @@ pipelineJob('kael_test_env_nok8s') {
     wrappers {
          // ...
     }
-}
