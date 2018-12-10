@@ -14,9 +14,12 @@ pipeline {
             steps {
                 /*withContext{
                     token: 'build4mepls'
-                }*/
+                }
                 configure { Node project ->
                     project / authToken("myToken")
+                }*/
+                triggers {
+                    issueCommentTrigger('.*retest this please.*')
                 }
                 sh 'env'
                 script{
