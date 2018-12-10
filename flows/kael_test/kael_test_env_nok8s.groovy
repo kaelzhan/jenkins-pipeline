@@ -1,10 +1,10 @@
 @Library('my_lib') pipelineLibrary
 
 pipeline {
-    triggers {
-        //issueCommentTrigger('build4mepls')
+    /*triggers {
+        issueCommentTrigger('build4mepls')
         token: 'build4mepls'
-    }
+    }*/
     agent any
 
     parameters {
@@ -22,6 +22,7 @@ pipeline {
                 configure { Node project ->
                     project / authToken("myToken")
                 }*/
+                authenticationToken('secret')
 
                 sh 'env'
                 script{
