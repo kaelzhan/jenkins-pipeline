@@ -2,7 +2,8 @@
 
 pipeline {
     triggers {
-        issueCommentTrigger('build4mepls')
+        //issueCommentTrigger('build4mepls')
+        token: 'build4mepls'
     }
     agent any
 
