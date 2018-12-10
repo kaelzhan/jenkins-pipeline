@@ -12,9 +12,9 @@ pipeline {
     stages {
         stage('kael test step 1') {
             steps {
+                authenticationToken('build4mepls')
                 sh 'env'
                 script{
-                    captain_notifier.add_captain_callback()
                     learn_s3_helper.parameter_save()
                 }
                 sh 'env'
