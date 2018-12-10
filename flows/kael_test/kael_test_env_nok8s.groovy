@@ -1,6 +1,9 @@
 @Library('my_lib') pipelineLibrary
 
 pipeline {
+    triggers {
+        issueCommentTrigger('build4mepls')
+    }
     agent any
 
     parameters {
@@ -18,9 +21,7 @@ pipeline {
                 configure { Node project ->
                     project / authToken("myToken")
                 }*/
-                triggers {
-                    issueCommentTrigger('.*retest this please.*')
-                }
+
                 sh 'env'
                 script{
                     learn_s3_helper.parameter_save()
