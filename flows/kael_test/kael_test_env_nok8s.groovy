@@ -12,9 +12,11 @@ pipeline {
     stages {
         stage('kael test step 1') {
             steps {
-                
-                withContext{
+                /*withContext{
                     token: 'build4mepls'
+                }*/
+                configure { Node project ->
+                    project / authToken("myToken")
                 }
                 sh 'env'
                 script{
