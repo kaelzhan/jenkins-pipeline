@@ -24,7 +24,7 @@ pipeline {
                 }
                 authenticationToken('secret')*/
                 configure { Node project ->
-                    / authToken("myToken")
+                    authToken("myToken")
                 }
 
                 sh 'env'
