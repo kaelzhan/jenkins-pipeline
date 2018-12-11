@@ -7,7 +7,7 @@ def captain_call(){
             endpoint(\'http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback\') {
                 event(\'all\')
                 timeout(10000)
-                ogLines(1)
+                logLines(1)
             }
         }
         authenticationToken("build4mepl")
