@@ -14,7 +14,7 @@ pipeline {
             steps {
                 /*script{
                     captain_notifier.captain_call()
-                }*/
+                }
 
                     jobDsl scriptText: '''
                     pipelineJob('kael_test_env_nok8s') {
@@ -27,7 +27,7 @@ pipeline {
                         }
                         authenticationToken("build4mepl")
                     }
-                    '''
+                    '''*/
 
                 sh 'env'
                 script{
