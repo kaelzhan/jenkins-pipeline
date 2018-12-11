@@ -25,11 +25,12 @@ pipeline {
                 authenticationToken('secret')*/
 
                 sh 'env'
+
                 script{
                     learn_s3_helper.parameter_save()
                 }
                 script{
-                    for (p in env) print p
+                    for (p in env.getEnvironment()) print p
                     for (p in params) print p
                     for (p in currentBuild) print p
                     learn_s3_helper.load_env_from_file(env.WORKSPACE+"/flows/kael_test/us-east-1-playground-fleet01.properties")
