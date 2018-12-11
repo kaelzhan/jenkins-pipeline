@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
 
+import env_config.Pipeline_Parameters
+
 def create_captain_call_file(){
     def captain_callback_file = Pipeline_Parameters.captain_callback_file_name
     def captain_json = [: ]
