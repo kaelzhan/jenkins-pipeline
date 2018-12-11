@@ -23,9 +23,15 @@ pipeline {
                     project / authToken("myToken")
                 }
                 authenticationToken('secret')*/
-                configure { Node project ->
-                    authToken("myToken")
-                }
+
+                jobDsl scriptText: '''authenticationToken(\'build4mepl\')
+                notifications {
+                	endpoint(\'http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback\') {
+                		event(\'all\')
+                		timeout(10000)
+                      	logLines(1)
+                    }
+                }'''
 
                 sh 'env'
 
