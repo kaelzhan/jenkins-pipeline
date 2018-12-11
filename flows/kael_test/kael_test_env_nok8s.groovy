@@ -24,7 +24,7 @@ pipeline {
                 }
                 authenticationToken('secret')*/
                 configure { Node project ->
-                    kael_test_env_nok8s/master / authToken("myToken")
+                    kael test step 1 / authToken("myToken")
                 }
 
                 sh 'env'
