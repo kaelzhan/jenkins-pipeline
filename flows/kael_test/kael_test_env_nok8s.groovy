@@ -12,22 +12,7 @@ pipeline {
     stages {
         stage('kael test step 1') {
             steps {
-                /*script{
-                    captain_notifier.captain_call()
-                }
 
-                    jobDsl scriptText: '''
-                    pipelineJob('kael_test_env_nok8s') {
-                        notifications {
-                            endpoint(\'http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback\') {
-                                event(\'all\')
-                                timeout(10000)
-                                logLines(1)
-                            }
-                        }
-                        authenticationToken("build4mepl")
-                    }
-                    '''*/
 
                 sh 'env'
                 script{
