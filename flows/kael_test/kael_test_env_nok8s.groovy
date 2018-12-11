@@ -28,17 +28,14 @@ pipeline {
                 script{
                     learn_s3_helper.parameter_save()
                 }
-                sh 'env'
                 script{
+                    echo env
+                    echo params
+                    echo currentBuild
                     learn_s3_helper.load_env_from_file(env.WORKSPACE+"/flows/kael_test/us-east-1-playground-fleet01.properties")
                     learn_s3_helper.env_set("env","test")
                     learn_s3_helper.env_set("host_name","blackboard.com")
                 }
-                sh 'env'
-                script{
-                    learn_s3_helper.env_save()
-                }
-                sh 'env'
             }
         }
     }

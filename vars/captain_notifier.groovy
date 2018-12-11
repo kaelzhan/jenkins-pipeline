@@ -3,6 +3,19 @@
 import java.net.*;
 
 def callback_captain() {
+
+#
+# update captain
+#
+CODELINE=$(echo $BRANCH | sed 's/\.[0-9]*$//')
+
+set +e
+curl --max-time 60 --insecure -k -f -X POST -F "version=$BUILD_VERSION" -F "type=rc" -F "s3path=$BUCKET/$BUILD_VERSION" -F "codeline=$CODELINE" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
+if (( $? != 0 )); then
+  echo "WARNING: Could not post to captain - see output above"
+fi
+
+
     echo "test"
 
     def targetUrl = new URL("http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback")
