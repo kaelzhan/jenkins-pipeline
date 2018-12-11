@@ -17,7 +17,7 @@ pipeline {
                 }*/
 
                     jobDsl scriptText: '''
-                    pipelineJob('kael_test_env_nok8s/job/master') {
+                    multibranchPipelineJob('kael_test_env_nok8s') {
                         notifications {
                             endpoint(\'http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback\') {
                                 event(\'all\')
