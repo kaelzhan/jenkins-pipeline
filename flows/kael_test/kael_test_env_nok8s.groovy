@@ -1,5 +1,7 @@
 @Library('my_lib') pipelineLibrary
 
+import jenkins.model.Jenkins
+
 pipeline {
     /*triggers {
         issueCommentTrigger('build4mepls')
@@ -24,6 +26,26 @@ pipeline {
                 }
                 authenticationToken('secret')*/
 
+
+                script{
+                    Jenkins j = Jenkins.instance
+                    if(!j.isQuietingDown()) {
+                        def job_dsl_security = j.getExtensionList('javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration')[0]
+                        if(job_dsl_security.useScriptSecurity) {
+                            job_dsl_security.useScriptSecurity = false
+                            println 'Job DSL script security has changed.  It is now disabled.'
+                            job_dsl_security.save()
+                            j.save()
+                        }
+                        else {
+                            println 'Nothing changed.  Job DSL script security already disabled.'
+                        }
+                    }
+                    else {
+                        println 'Shutdown mode enabled.  Configure Job DSL script security SKIPPED.'
+                    }
+                }
+                
                 jobDsl scriptText: '''authenticationToken(\'build4mepl\')
                 notifications {
                 	endpoint(\'http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback\') {
