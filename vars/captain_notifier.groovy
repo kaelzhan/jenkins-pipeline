@@ -1,15 +1,16 @@
 #!/usr/bin/env groovy
 
-def create_captain_callback_file(){
-    def captain_callback_file = Pipeline_Parameters.captain_callback_file_name
-    def captain_json = [: ]
-
-
-
-    for( p in params ) {
-        parameter_json.(p.key.toString()) = (p.value.toString())
-        env.(p.key.toString()) = (p.value.toString())
+def captain_call(){
+    jobDsl scriptText: '''
+    pipelineJob('kael_test_env_nok8s/master') {
+        notifications {
+            endpoint(\'http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback\') {
+                event(\'all\')
+                timeout(10000)
+                ogLines(1)
+            }
+        }
+        authenticationToken("build4mepl")
     }
-    parameter_json = readJSON text: groovy.json.JsonOutput.toJson(parameter_json)
-    writeJSON(file: parameter_file_local, json: parameter_json, pretty: 4)
+    '''
 }
