@@ -27,7 +27,7 @@ pipeline {
                 '''
                 */
                 script{
-                    captain_notifier.create_captain_call_file()
+                    captain_notifier.parameter_save()
                 }
 
                 sh 'env'
