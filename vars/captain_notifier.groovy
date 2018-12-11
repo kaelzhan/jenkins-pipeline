@@ -24,8 +24,8 @@ def create_captain_call_file(){
 }*/
 
 // save all parameters from caption to local file and runtime_env
-def parameter_save(){
-    def parameter_file = Pipeline_Parameters.environment_parameters_file_name
+def create_captain_call_file(){
+    def parameter_file = Pipeline_Parameters.captain_callback_file_name
     def parameter_file_local = env.WORKSPACE + "/" + parameter_file
     def parameter_json = [: ]
 
