@@ -29,9 +29,9 @@ pipeline {
                     learn_s3_helper.parameter_save()
                 }
                 script{
-                    print env
-                    print params
-                    print currentBuild
+                    for (p in env) print p
+                    for (p in params) print p
+                    for (p in currentBuild) print p
                     learn_s3_helper.load_env_from_file(env.WORKSPACE+"/flows/kael_test/us-east-1-playground-fleet01.properties")
                     learn_s3_helper.env_set("env","test")
                     learn_s3_helper.env_set("host_name","blackboard.com")
