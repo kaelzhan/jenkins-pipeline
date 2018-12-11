@@ -24,7 +24,7 @@ pipeline {
                 }
                 authenticationToken('secret')*/
                 configure { Node project ->
-                    "kael test step 1" / authToken("myToken")
+                    / authToken("myToken")
                 }
 
                 sh 'env'
