@@ -39,7 +39,7 @@ def captain_callback_onstart(){
     }
 }
 
-def captain_callback_onstart(job_result){
+def captain_callback_onfinish(job_result){
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
     def captain_json = readJSON file: captain_callback_file
 
