@@ -36,7 +36,7 @@ def captain_callback_onstart(){
     withEnv(["captain_callback_file=${captain_callback_file}"]){
         sh '''#!/bin/bash
         set +e
-        curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -F "file@${captain_callback_file}" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
+        curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -F "file=@${captain_callback_file}" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
         if (( $? != 0 )); then
           echo "WARNING: Could not post to captain - see output above"
         fi
@@ -55,7 +55,7 @@ def captain_callback_onfinish(job_result){
     withEnv(["captain_callback_file=${captain_callback_file}"]){
         sh '''#!/bin/bash
         set +e
-        curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -F "file@${captain_callback_file}" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
+        curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -F "file=@${captain_callback_file}" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
         if (( $? != 0 )); then
           echo "WARNING: Could not post to captain - see output above"
         fi
