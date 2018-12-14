@@ -25,13 +25,12 @@ def create_captain_call_file(){
         captain_json.("build").("parameters").(p.key.toString()) = (p.value.toString())
     }
     captain_json = readJSON text: groovy.json.JsonOutput.toJson(captain_json)
-    writeJSON(file: captain_callback_file, json: captain_json, pretty: 4)
+    writeJSON(file: captain_callback_file, json: captain_json)
 }
 
 def captain_callback_onstart(){
     create_captain_call_file()
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
-    captain_json = readJSON file: captain_callback_file
 
     withEnv(["captain_callback_file=${captain_callback_file}"]){
         sh '''#!/bin/bash
@@ -50,7 +49,7 @@ def captain_callback_onfinish(job_result){
 
     captain_json.("build").("phase") = "FINALIZED"
     captain_json.("build").("status") = job_result
-    writeJSON(file: captain_callback_file, json: captain_json, pretty: 4)
+    writeJSON(file: captain_callback_file, json: captain_json)
 
     withEnv(["captain_callback_file=${captain_callback_file}"]){
         sh '''#!/bin/bash
