@@ -17,7 +17,7 @@ def create_captain_call_file(){
     captain_json.("url") = pipeline_jobname.toString()
     captain_json.("build") = [: ]
     captain_json.("build").("url") = pipeline_jobname + env.BUILD_ID.toString() + "/"
-    captain_json.("build").("ful_url") = env.JOB_URL.toString()
+    captain_json.("build").("ful_url") = env.JOB_URL.toString() + env.BUILD_ID.toString() + "/"
     captain_json.("build").("number") = env.BUILD_ID.toString()
     captain_json.("build").("phase") = "STARTED"
     captain_json.("build").("status") = "null"
