@@ -7,8 +7,12 @@ def create_captain_call_file(){
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
     def captain_json = [: ]
 
-    def pipeline_jobname = "job/" + env.JOB_NAME + '/'
-    //def pipeline_jobname = "job/" + env.JOB_NAME.toString().split('/')[0] + "/job/" + env.JOB_NAME.toString().split('/')[1] + '/'
+    if(env.JOB_NAME.contain('/')){
+        pipeline_jobname = "job/" + env.JOB_NAME.toString().split('/')[0] + "/job/" + env.JOB_NAME.toString().split('/')[1] + '/'
+    }else{
+        pipeline_jobname = "job/" + env.JOB_NAME + '/'
+    }
+
     captain_json.("name") = env.JOB_NAME.toString()
     captain_json.("url") = pipeline_jobname.toString()
     captain_json.("build") = [: ]
