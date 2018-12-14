@@ -33,10 +33,10 @@ def captain_callback_onstart(){
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
     captain_json = readJSON file: captain_callback_file
 
-    withEnv(["captain_callback_file=${captain_callback_file}"]){
+    withEnv(["captain_json=${captain_json}"]){
         sh '''#!/bin/bash
         set +e
-        curl --max-time 60 --insecure -k -f -X POST -F "captain_json" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
+        curl --max-time 60 --insecure -k -f -X POST -F "${captain_json}" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
         if (( $? != 0 )); then
           echo "WARNING: Could not post to captain - see output above"
         fi
@@ -52,10 +52,10 @@ def captain_callback_onfinish(job_result){
     captain_json.("build").("status") = job_result
     writeJSON(file: captain_callback_file, json: captain_json, pretty: 4)
 
-    withEnv(["captain_callback_file=${captain_callback_file}"]){
+    withEnv(["captain_json=${captain_json}"]){
         sh '''#!/bin/bash
         set +e
-        curl --max-time 60 --insecure -k -f -X POST -F "captain_json" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
+        curl --max-time 60 --insecure -k -f -X POST -F "${captain_json}" http://jenkins:lko34kd9fd2@captain.bbpd.io/api/jenkins/callback
         if (( $? != 0 )); then
           echo "WARNING: Could not post to captain - see output above"
         fi
