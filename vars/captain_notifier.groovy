@@ -24,13 +24,11 @@ def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_ca
     captain_json.name = env.JOB_NAME
     captain_json.display_name = env.JOB_NAME
     captain_json.url = pipeline_jobname
-    captain_json.build = [:]
-
     captain_json.build = [
-      url: pipeline_jobname + env.BUILD_ID + '/'
-      ful_url: env.JOB_URL + env.BUILD_ID + '/'
-      number: env.BUILD_ID.toString()
-      phase: 'STARTED'
+      url: pipeline_jobname + env.BUILD_ID + '/',
+      ful_url: env.JOB_URL + env.BUILD_ID + '/',
+      number: env.BUILD_ID.toString(),
+      phase: 'STARTED',
       status: 'null'
     ]
     captain_json.build.parameters = [:]
