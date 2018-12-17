@@ -30,7 +30,7 @@ pipeline {
                     )
                     print creds
                 }
-                
+
                 /*script{
                     captain_notifier.captain_callback_onstart()
                 }
