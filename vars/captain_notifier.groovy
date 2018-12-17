@@ -16,43 +16,34 @@ def get_password(_username){
 
 // Create a json string file which includes the attributes that should be sent back to captain.
 def create_captain_call_file(){
-def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
+    def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
     def captain_json = [:]
-
-    pipeline_jobname = env.JOB_NAME.replaceAll( '/', '/job/' ) + '/'
+    def pipeline_jobname = env.JOB_NAME.replaceAll( '/', '/job/' ) + '/'
 
     captain_json.name = env.JOB_NAME
     captain_json.display_name = env.JOB_NAME
     captain_json.url = pipeline_jobname
     captain_json.build = [
-      url: pipeline_jobname + env.BUILD_ID + '/',
-      ful_url: env.JOB_URL + env.BUILD_ID + '/',
-      number: env.BUILD_ID.toString(),
-      phase: 'STARTED',
-      status: 'null'
+        url: pipeline_jobname + env.BUILD_ID + '/',
+        full_url: env.JOB_URL + env.BUILD_ID + '/',
+        number: env.BUILD_ID.toString(),
+        phase: 'STARTED',
+        status: null,
+        parameters: [:]
     ]
-    captain_json.build.parameters = [:]
-
     for (p in params){
         captain_json.build.parameters[p.key.toString()] = p.value.toString()
     }
-    captain_json = readJSON text: groovy.json.JsonOutput.toJson(captain_json)
-    writeJSON(file: captain_callback_file, json: captain_json)
+    writeFile file: captain_callback_file, text: JsonOutput.toJson( captain_json )
 }
 
 // Call back to captain when a jenkins job started.
 def captain_callback_onstart(){
-
-    echo "--0-start-create-captain-call-file-------"
     create_captain_call_file()
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
-
-    echo "--3-start-get-captain-user-cred-------"
-
     def captain_callback_user = Pipeline_Parameters.captain_callback_user_name
     def captain_callback_cred = get_password(captain_callback_user)
 
-    echo "--4-start-post-notification-to-captain-------"
     withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
         sh '''#!/bin/bash
         set +e
