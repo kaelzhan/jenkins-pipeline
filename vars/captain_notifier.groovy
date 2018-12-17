@@ -30,7 +30,6 @@ def create_captain_call_file(){
         number: env.BUILD_ID.toString(),
         phase: 'STARTED',
         status: null,
-        parameters: [:]
     ]
     for (p in params){
         captain_json.build.parameters[p.key.toString()] = p.value.toString()
