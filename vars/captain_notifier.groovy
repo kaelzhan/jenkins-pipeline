@@ -1,33 +1,32 @@
-#!/usr/bin/env groovy
-
 import env_config.Pipeline_Parameters
 import groovy.json.JsonOutput
 
+// Create a json string file which includes the attributes that should be sent back to captain.
 def create_captain_call_file(){
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
-    def captain_json = [: ]
+    def captain_json = [:]
 
-    if( env.JOB_NAME.count("/") == 0 ){
-        pipeline_jobname = "job/" + env.JOB_NAME + '/'
-    }else{
-        pipeline_jobname = "job/" + env.JOB_NAME.toString().split('/')[0] + "/job/" + env.JOB_NAME.toString().split('/')[1] + '/'
-    }
-    captain_json.("name") = env.JOB_NAME.toString()
-    captain_json.("url") = pipeline_jobname.toString()
-    captain_json.("build") = [: ]
-    captain_json.("build").("url") = pipeline_jobname + env.BUILD_ID.toString() + "/"
-    captain_json.("build").("ful_url") = env.JOB_URL.toString() + env.BUILD_ID.toString() + "/"
-    captain_json.("build").("number") = env.BUILD_ID.toString()
-    captain_json.("build").("phase") = "STARTED"
-    captain_json.("build").("status") = "null"
-    captain_json.("build").("parameters") = [: ]
+    pipeline_jobname = env.JOB_NAME.replaceAll( '/', '/job/' ) + '/'
+
+    captain_json.name = env.JOB_NAME
+    captain_json.display_name = env.JOB_NAME
+    captain_json.url = pipeline_jobname
+
+    captain_json.build = [
+        url: pipeline_jobname + env.BUILD_ID + '/'
+        full_url: env.JOB_URL + env.BUILD_ID + '/'
+        number: env.BUILD_ID
+        phase: 'STARTED'
+        status: null
+        parameters: [:]
+    ]
     for (p in params){
-        captain_json.("build").("parameters").(p.key.toString()) = (p.value.toString())
+        captain_json.build.parameters[ p.key.toString() ] = [ p.value.toString() ]
     }
-    captain_json = readJSON text: groovy.json.JsonOutput.toJson(captain_json)
-    writeJSON(file: captain_callback_file, json: captain_json)
+    writeFile file: captain_callback_file, text: JsonOutput.toJson( captain_json )
 }
 
+// Call back to captain when a jenkins job started.
 def captain_callback_onstart(){
     create_captain_call_file()
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
@@ -43,6 +42,7 @@ def captain_callback_onstart(){
     }
 }
 
+// Call back to captain when a jenkins job ended. The job_result should be "SUCCESS" or "FAILURE".
 def captain_callback_onfinish(job_result){
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
     def captain_json = readJSON file: captain_callback_file
