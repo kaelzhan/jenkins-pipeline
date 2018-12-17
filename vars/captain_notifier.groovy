@@ -16,9 +16,11 @@ def get_password(_username){
 
 // Create a json string file which includes the attributes that should be sent back to captain.
 def create_captain_call_file(){
+
+    echo "--0-start-create-captain-call-file-------"
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
     def captain_json = [:]
-    def pipeline_jobname = env.JOB_NAME.replaceAll( '/', '/job/' ) + '/'
+    def pipeline_jobname = env.JOB_NAME.replaceFirst( '/', '/job/' ) + '/'
 
     echo "--1-start-create-captain-call-file-------"
     captain_json.name = env.JOB_NAME
