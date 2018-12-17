@@ -17,12 +17,13 @@ def get_password(_username){
 // Create a json string file which includes the attributes that should be sent back to captain.
 def create_captain_call_file(){
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
-    def captain_json = [:]
     def pipeline_jobname = env.JOB_NAME.replaceAll( '/', '/job/' ) + '/'
 
-    captain_json.name = env.JOB_NAME
-    captain_json.display_name = env.JOB_NAME
-    captain_json.url = pipeline_jobname
+    captain_json = [
+        name: env.JOB_NAME,
+        display_name: env.JOB_NAME,
+        url: pipeline_jobname
+    ]
     captain_json.build = [
         url: pipeline_jobname + env.BUILD_ID + '/',
         full_url: env.JOB_URL + env.BUILD_ID + '/',
@@ -62,7 +63,7 @@ def captain_callback_onfinish(job_result){
     def captain_callback_cred = get_password(captain_callback_user)
     def captain_json = readJSON file: captain_callback_file
 
-    captain_json.build.phase = "FINALIZED"
+    captain_json.build.phase = 'FINALIZED'
     captain_json.build.status = job_result
     writeJSON(file: captain_callback_file, json: captain_json)
 
