@@ -21,15 +21,20 @@ def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_ca
 
     pipeline_jobname = env.JOB_NAME.replaceAll( '/', '/job/' ) + '/'
 
-    captain_json.("name") = env.JOB_NAME.toString()
-    captain_json.("url") = pipeline_jobname.toString()
-    captain_json.("build") = [: ]
-    captain_json.("build").("url") = pipeline_jobname + env.BUILD_ID.toString() + "/"
-    captain_json.("build").("ful_url") = env.JOB_URL.toString() + env.BUILD_ID.toString() + "/"
-    captain_json.("build").("number") = env.BUILD_ID.toString()
-    captain_json.("build").("phase") = "STARTED"
-    captain_json.("build").("status") = "null"
-    captain_json.("build").("parameters") = [: ]
+    captain_json.name = env.JOB_NAME
+    captain_json.display_name = env.JOB_NAME
+    captain_json.url = pipeline_jobname
+    captain_json.build = [:]
+
+    captain_json.build = [
+      url: pipeline_jobname + env.BUILD_ID + '/'
+      ful_url: env.JOB_URL + env.BUILD_ID + '/'
+      number: env.BUILD_ID
+      phase: 'STARTED'
+      status: 'null'
+      parameters: [:]
+    ]
+
     for (p in params){
         captain_json.("build").("parameters").(p.key.toString()) = (p.value.toString())
     }
@@ -50,7 +55,7 @@ def captain_callback_onstart(){
     def captain_callback_cred = get_password(captain_callback_user)
 
     echo "--4-start-post-notification-to-captain-------"
-    //withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
+    withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
         sh '''#!/bin/bash
         set +e
         curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://${captain_callback_user}:${captain_callback_cred}@captain.bbpd.io/api/jenkins/callback
@@ -58,7 +63,7 @@ def captain_callback_onstart(){
           echo "WARNING: Could not post to captain - see output above"
         fi
         '''
-    //}
+    }
 }
 
 // Call back to captain when a jenkins job ended. The job_result should be "SUCCESS" or "FAILURE".
@@ -72,7 +77,7 @@ def captain_callback_onfinish(job_result){
     captain_json.build.status = job_result
     writeJSON(file: captain_callback_file, json: captain_json)
 
-    //withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
+    withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
         sh '''#!/bin/bash
         set +e
         curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://${captain_callback_user}:${captain_callback_cred}@captain.bbpd.io/api/jenkins/callback
@@ -80,5 +85,5 @@ def captain_callback_onfinish(job_result){
           echo "WARNING: Could not post to captain - see output above"
         fi
         '''
-    //}
+    }
 }
