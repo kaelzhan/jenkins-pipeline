@@ -29,14 +29,14 @@ def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_ca
     captain_json.build = [
       url: pipeline_jobname + env.BUILD_ID + '/'
       ful_url: env.JOB_URL + env.BUILD_ID + '/'
-      number: env.BUILD_ID
+      number: env.BUILD_ID.toString()
       phase: 'STARTED'
       status: 'null'
-      parameters: [:]
     ]
+    captain_json.build.parameters = [:]
 
     for (p in params){
-        captain_json.("build").("parameters").(p.key.toString()) = (p.value.toString())
+        captain_json.build.parameters[p.key.toString()] = p.value.toString()
     }
     captain_json = readJSON text: groovy.json.JsonOutput.toJson(captain_json)
     writeJSON(file: captain_callback_file, json: captain_json)
