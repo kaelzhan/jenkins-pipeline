@@ -17,13 +17,10 @@ def get_password(_username){
 // Create a json string file which includes the attributes that should be sent back to captain.
 def create_captain_call_file(){
 def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
-    def captain_json = [: ]
+    def captain_json = [:]
 
-    if( env.JOB_NAME.count("/") == 0 ){
-        pipeline_jobname = "job/" + env.JOB_NAME + '/'
-    }else{
-        pipeline_jobname = "job/" + env.JOB_NAME.toString().split('/')[0] + "/job/" + env.JOB_NAME.toString().split('/')[1] + '/'
-    }
+    pipeline_jobname = env.JOB_NAME.replaceAll( '/', '/job/' ) + '/'
+
     captain_json.("name") = env.JOB_NAME.toString()
     captain_json.("url") = pipeline_jobname.toString()
     captain_json.("build") = [: ]
@@ -53,7 +50,7 @@ def captain_callback_onstart(){
     def captain_callback_cred = get_password(captain_callback_user)
 
     echo "--4-start-post-notification-to-captain-------"
-    withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
+    //withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
         sh '''#!/bin/bash
         set +e
         curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://${captain_callback_user}:${captain_callback_cred}@captain.bbpd.io/api/jenkins/callback
@@ -61,7 +58,7 @@ def captain_callback_onstart(){
           echo "WARNING: Could not post to captain - see output above"
         fi
         '''
-    }
+    //}
 }
 
 // Call back to captain when a jenkins job ended. The job_result should be "SUCCESS" or "FAILURE".
@@ -73,9 +70,9 @@ def captain_callback_onfinish(job_result){
 
     captain_json.build.phase = "FINALIZED"
     captain_json.build.status = job_result
-    writeFile file: captain_callback_file, text: captain_json
+    writeJSON(file: captain_callback_file, json: captain_json)
 
-    withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
+    //withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
         sh '''#!/bin/bash
         set +e
         curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://${captain_callback_user}:${captain_callback_cred}@captain.bbpd.io/api/jenkins/callback
@@ -83,5 +80,5 @@ def captain_callback_onfinish(job_result){
           echo "WARNING: Could not post to captain - see output above"
         fi
         '''
-    }
+    //}
 }
