@@ -23,15 +23,15 @@ pipeline {
     stages {
         stage('kael test step 1') {
             steps {
-                script{
+                /*script{
                     def creds = CredentialsMatchers.firstOrNull(
                         CredentialsProvider.lookupCredentials(StringCredentials.class, Jenkins.getInstance(), ACL.SYSTEM, Collections.<DomainRequirement>emptyList()),
                         CredentialsMatchers.withId("jenkins")
                     )
                     print creds
-                }
+                }*/
 
-                /*script{
+                script{
                     captain_notifier.captain_callback_onstart()
                 }
 
@@ -47,7 +47,7 @@ pipeline {
                     learn_s3_helper.env_set("env","test")
                     learn_s3_helper.env_set("host_name","blackboard.com")
                     captain_notifier.captain_callback_onfinish("SUCCESS")
-                }*/
+                }
 
             }
         }
