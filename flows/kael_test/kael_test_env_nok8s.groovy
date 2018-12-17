@@ -1,16 +1,5 @@
 @Library('my_lib') pipelineLibrary
 
-import com.cloudbees.plugins.credentials.CredentialsMatchers;
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.domains.DomainRequirement;
-import hudson.security.ACL;
-import hudson.util.FormValidation;
-import hudson.util.Secret;
-import java.util.Arrays;
-import java.util.Collections;
-import jenkins.model.Jenkins;
-import org.jenkinsci.plugins.plaincredentials.StringCredentials;
-
 pipeline {
     agent any
 
@@ -31,12 +20,9 @@ pipeline {
                     print creds
                 }*/
 
-                script{
-                    captain_notifier.captain_callback_onstart()
-                }
-
                 sh 'env'
                 script{
+                    captain_notifier.captain_callback_onstart()
                     learn_s3_helper.parameter_save()
                 }
                 script{
