@@ -20,6 +20,7 @@ def create_captain_call_file(){
     def captain_json = [:]
     def pipeline_jobname = env.JOB_NAME.replaceAll( '/', '/job/' ) + '/'
 
+    echo "--1-start-create-captain-call-file-------"
     captain_json.name = env.JOB_NAME
     captain_json.display_name = env.JOB_NAME
     captain_json.url = pipeline_jobname
@@ -32,8 +33,10 @@ def create_captain_call_file(){
         parameters: [:]
     ]
     for (p in params){
-        captain_json.build.parameters[ p.key.toString() ] = [ p.value.toString() ]
+        captain_json.build.parameters[ p.key.toString() ] = p.value.toString()
     }
+
+    echo "--2-start-write-captain-call-file-------"
     writeFile file: captain_callback_file, text: JsonOutput.toJson( captain_json )
 }
 
@@ -41,9 +44,13 @@ def create_captain_call_file(){
 def captain_callback_onstart(){
     create_captain_call_file()
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
+
+    echo "--3-start-get-captain-user-cred-------"
+
     def captain_callback_user = Pipeline_Parameters.captain_callback_user_name
     def captain_callback_cred = get_password(captain_callback_user)
 
+    echo "--4-start-post-notification-to-captain-------"
     withEnv(["captain_callback_file=${captain_callback_file}", "captain_callback_user=${captain_callback_user}", "captain_callback_cred=${captain_callback_cred}"]){
         sh '''#!/bin/bash
         set +e
