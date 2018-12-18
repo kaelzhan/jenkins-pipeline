@@ -1,6 +1,13 @@
 import env_config.Pipeline_Parameters
 import groovy.json.JsonOutput
 
+// Run block with Captain Credentials.
+def withCaptainCredentials( block ) {
+  withCredentials( [ usernamePassword( credentialsId: Pipeline_Parameters.captain_callback_cred_id, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD' ) ] ) {
+    block()
+  }
+}
+
 // Create a json string file which includes the attributes that should be sent back to captain.
 def create_captain_call_file(){
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
@@ -30,12 +37,11 @@ def captain_callback_onstart(){
     create_captain_call_file()
     def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
 
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: Pipeline_Parameters.captain_callback_cred_id, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-        sh 'echo uname=$USERNAME pwd=$PASSWORD'
+    withCaptainCredentials {
         withEnv(["captain_callback_file=${captain_callback_file}"]){
             sh '''#!/bin/bash
             set +e
-            curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://$USERNAME:$PASSWORD@captain.bbpd.io/api/jenkins/callback
+            curl --max-time 60 --insecure --silent -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://$USERNAME:$PASSWORD@captain.bbpd.io/api/jenkins/callback
             if (( $? != 0 )); then
               echo "WARNING: Could not post to captain - see output above"
             fi
@@ -54,12 +60,11 @@ def captain_callback_onfinish(job_result){
     captain_json.build.status = job_result
     writeJSON(file: captain_callback_file, json: captain_json)
 
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: Pipeline_Parameters.captain_callback_cred_id, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-        sh 'echo uname=$USERNAME pwd=$PASSWORD'
+    withCaptainCredentials {
         withEnv(["captain_callback_file=${captain_callback_file}"]){
             sh '''#!/bin/bash
             set +e
-            curl --max-time 60 --insecure -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://$USERNAME:$PASSWORD@captain.bbpd.io/api/jenkins/callback
+            curl --max-time 60 --insecure --silent -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://$USERNAME:$PASSWORD@captain.bbpd.io/api/jenkins/callback
             if (( $? != 0 )); then
               echo "WARNING: Could not post to captain - see output above"
             fi
