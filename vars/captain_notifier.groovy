@@ -1,11 +1,20 @@
 import env_config.Pipeline_Parameters
 import groovy.json.JsonOutput
 
-// Run block with Captain Credentials.
-def withCaptainCredentials( block ) {
-  withCredentials( [ usernamePassword( credentialsId: Pipeline_Parameters.captain_callback_cred_id, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD' ) ] ) {
-    block()
-  }
+// Send Captain callback.
+def send_captain_callback() {
+    def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
+    withCredentials( [ usernamePassword( credentialsId: Pipeline_Parameters.captain_callback_cred_id, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD' ) ] ) {
+        withEnv(["captain_callback_file=${captain_callback_file}"]){
+            sh '''#!/bin/bash
+            set +e
+            curl --max-time 60 --insecure -s -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://$USERNAME:$PASSWORD@captain.bbpd.io/api/jenkins/callback
+            if (( $? != 0 )); then
+              echo "WARNING: Could not post to captain - see output above"
+            fi
+            '''
+        }
+    }
 }
 
 // Create a json string file which includes the attributes that should be sent back to captain.
@@ -35,20 +44,7 @@ def create_captain_call_file(){
 // Call back to captain when a jenkins job started.
 def captain_callback_onstart(){
     create_captain_call_file()
-    def captain_callback_file = env.WORKSPACE + "/" + Pipeline_Parameters.captain_callback_file_name
-
-    withCaptainCredentials {
-        withEnv(["captain_callback_file=${captain_callback_file}"]){
-            sh '''#!/bin/bash
-            set +e
-            curl --max-time 60 --insecure --silent -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://$USERNAME:$PASSWORD@captain.bbpd.io/api/jenkins/callback
-            if (( $? != 0 )); then
-              echo "WARNING: Could not post to captain - see output above"
-            fi
-            '''
-        }
-    }
-
+    send_captain_callback()
 }
 
 // Call back to captain when a jenkins job ended. The job_result should be "SUCCESS" or "FAILURE".
@@ -59,16 +55,5 @@ def captain_callback_onfinish(job_result){
     captain_json.build.phase = 'FINALIZED'
     captain_json.build.status = job_result
     writeJSON(file: captain_callback_file, json: captain_json)
-
-    withCaptainCredentials {
-        withEnv(["captain_callback_file=${captain_callback_file}"]){
-            sh '''#!/bin/bash
-            set +e
-            curl --max-time 60 --insecure --silent -k -f -H "Content-Type:application/json;charset=UTF-8" -X POST -d @${captain_callback_file} http://$USERNAME:$PASSWORD@captain.bbpd.io/api/jenkins/callback
-            if (( $? != 0 )); then
-              echo "WARNING: Could not post to captain - see output above"
-            fi
-            '''
-        }
-    }
+    send_captain_callback()
 }
