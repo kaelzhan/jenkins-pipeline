@@ -6,4 +6,6 @@ class Pipeline_Parameters {
     static final captain_callback_file_name = "captain_call_back.json"
 
     static final captain_callback_user_name = "jenkins"
+
+    static final captain_callback_cred_id = '2a73e199-c6d1-410e-8874-46e618b1ed7b'
 }
