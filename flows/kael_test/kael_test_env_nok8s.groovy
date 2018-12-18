@@ -12,20 +12,9 @@ pipeline {
     stages {
         stage('kael test step 1') {
             steps {
-                /*script{
-                    def creds = CredentialsMatchers.firstOrNull(
-                        CredentialsProvider.lookupCredentials(StringCredentials.class, Jenkins.getInstance(), ACL.SYSTEM, Collections.<DomainRequirement>emptyList()),
-                        CredentialsMatchers.withId("jenkins")
-                    )
-                    print creds
-                }*/
-
-                sh 'env'
                 script{
                     captain_notifier.captain_callback_onstart()
                     learn_s3_helper.parameter_save()
-                }
-                script{
                     for (p in env.getEnvironment()) print p
                     for (p in params) print p
                     for (p in currentBuild) print p
