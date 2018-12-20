@@ -61,8 +61,8 @@ def load_env_from_file(_file){
 
     def props = readProperties interpolate: true, file: _file
     props.each {
-        parameter_json.(it.key.toString()) = (it.value.toString().replace('${HOME}', env.HOME))
-        env.(it.key.toString()) = (it.value.toString().replace('${HOME}', env.HOME))
+        parameter_json[ it.key.toString() ] = (it.value.toString().replace('${HOME}', env.HOME))
+        env[ it.key.toString() ] = (it.value.toString().replace('${HOME}', env.HOME))
     }
 
     parameter_json = readJSON text: groovy.json.JsonOutput.toJson(parameter_json)
