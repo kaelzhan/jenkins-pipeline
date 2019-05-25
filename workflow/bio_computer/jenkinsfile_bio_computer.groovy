@@ -1,4 +1,6 @@
 @Library('kael_test_jenkins') pipelineLibrary
+import env_config.JenkinsCredentials
+
 
 def container_Template = libraryResource 'com/kubernetes/kael_k8s_bio_computer_template.yaml'
 def jenkins_git_id = JenkinsCredentials.jenkins_git_id
