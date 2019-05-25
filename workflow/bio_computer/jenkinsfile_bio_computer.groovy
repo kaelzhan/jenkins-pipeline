@@ -9,7 +9,7 @@ pipeline {
     agent {
         kubernetes {
             label 'bio_computer_' + UUID.randomUUID()
-            defaultContainer 'kael_k8s_bio_computer'
+            defaultContainer 'kael-k8s-bio-computer'
             yaml "${container_Template}"
         }
     }
@@ -23,17 +23,13 @@ pipeline {
         stage('kael test step 1') {
             steps {
                 sh 'env'
-                script{
-                    learn_s3_helper.parameter_save()
-                }
+                echo 'step 1'
             }
         }
         stage('kael test step 2') {
             steps {
                 sh 'env'
-                script{
-                    learn_s3_helper.env_read()
-                }
+                echo 'step 2'
             }
         }
     }
