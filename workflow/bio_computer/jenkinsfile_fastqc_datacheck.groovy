@@ -14,7 +14,7 @@ pipeline {
         }
     }
     parameters {
-        string(name: 'path', defaultValue: 'input', description: 'The input files path under work.')
+        string(name: 'inputpath', defaultValue: 'input', description: 'The input files path under work.')
     }
 
     stages {
@@ -22,10 +22,11 @@ pipeline {
             steps {
                 sh 'env'
                 sh '''
-fullpath = "/opt/work/"$path
-for i in ` ls $fullpath `
+fullpath = "/opt/work/"$inputpath
+cd $fullpath
+for i in `ls`
 do
-    fastqc $i > $i.fastqcout
+    fastqc $i > /opt/work/output/$i.fastqcout
 done
 '''
             }
