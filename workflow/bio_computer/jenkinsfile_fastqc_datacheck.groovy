@@ -20,13 +20,13 @@ pipeline {
     stages {
         stage('fastqc') {
             steps {
-                sh 'env'
-                sh '''
-fullpath = "/opt/work/"$inputpath
-cd $fullpath
+                sh '''#!/bin/bash
+source ~/.bashrc
+fullinputpath="/opt/work/"$inputpath
+cd $fullinputpath
 for i in `ls`
 do
-    fastqc $i > /opt/work/output/$i.fastqcout
+    fastqc $i -o "/opt/work/output/"
 done
 '''
             }
