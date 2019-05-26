@@ -40,6 +40,7 @@ else
 fi
 '''
             }
+        }
         stage('samtools') {
             steps {
                 echo 'step 2'
