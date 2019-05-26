@@ -11,6 +11,15 @@ jobList = [
         jenkinsfile_path:"workflow/bio_computer/jenkinsfile_bio_computer.groovy",
         include_branch:"master",
         folder:"sherry"
+    ],
+    [
+        name:"fastqc-datacheck",
+        description:"Check the input files data quality with fastqc.",
+        gitOwner:"kaelzhan",
+        gitRepo:"jenkins-pipeline",
+        jenkinsfile_path:"workflow/bio_computer/jenkinsfile_fastqc_datacheck.groovy",
+        include_branch:"master",
+        folder:"sherry"
     ]
 ]
 
