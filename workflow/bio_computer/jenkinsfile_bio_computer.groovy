@@ -14,22 +14,50 @@ pipeline {
         }
     }
     parameters {
-        string(name: 'client_id', defaultValue: '500000001', description: 'clinet_id')
-        string(name: 'env', defaultValue: 'playground', description: 'environment')
-        string(name: 'JENKINS_EXECUTION_ID', defaultValue: 'xxxxxxx', description: 'job id')
+        booleanParam(name: 'singel_seq', defaultValue: true, description: '单端测序，true or false?')
     }
 
     stages {
-        stage('kael test step 1') {
+        stage('hisat2') {
             steps {
-                sh 'env'
-                echo 'step 1'
+                sh '''#!/bin/bash
+source ~/.bashrc
+fullinputpath="/opt/work/"$inputpath
+cd $fullinputpath
+if [ singel_seq ]
+    for i in `ls`
+    do
+        hisat2 -p 8 -t -x /opt/work/resources/dmel -U $i  -S /opt/work/output/$i.sam
+    done
+else
+    for i in `seq -w 01 $[$(ls|wc -l)/2]`
+    do
+        echo $i
+        m1=$(ls *$i*.fq.gz|awk '{print $1}')
+        m2=$(ls *$i*.fq.gz|awk '{print $2}')
+        hisat2 -p 8 -t -x /opt/work/resources/dmel -1 $m1 -2 $m2 -S /opt/work/output/$m1.sam
+    done
+fi
+'''
+            }
+        stage('samtools') {
+            steps {
+                echo 'step 2'
             }
         }
-        stage('kael test step 2') {
+        stage('htseq') {
             steps {
-                sh 'env'
-                echo 'step 2'
+                echo 'step 3'
+            }
+        }
+        stage('read_counts') {
+            steps {
+                echo 'step 4'
+            }
+        }
+        stage('R_map') {
+            steps {
+                echo 'step 5'
             }
         }
     }
