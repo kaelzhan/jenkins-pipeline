@@ -25,6 +25,7 @@ source ~/.bashrc
 fullinputpath="/opt/work/"$inputpath
 cd $fullinputpath
 if [ singel_seq ]
+then
     for i in `ls`
     do
         hisat2 -p 8 -t -x /opt/work/resources/dmel -U $i  -S /opt/work/output/$i.sam
